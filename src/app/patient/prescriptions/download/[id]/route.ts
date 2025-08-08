@@ -1,6 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import type { NextRequest } from "next/server";
 
 interface RouteParams {
   id: string;
@@ -23,13 +22,11 @@ async function getData(id: string) {
   return { prescription, patient };
 }
 
-export async function GET(
-  req: NextRequest,
-  context: { params: RouteParams }
-) {
-  const { id } = context.params;
-  const data = await getData(id);
+export async function GET(req: NextRequest, context: any) {
+  const { params } = context as { params: RouteParams };
+  const { id } = params;
 
+  const data = await getData(id);
   if (!data) {
     return NextResponse.json(
       { error: "Prescription not found" },
