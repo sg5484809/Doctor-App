@@ -30,6 +30,9 @@ export default function PrescriptionsPage() {
   const [notes, setNotes] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
 
+  // New search state
+  const [searchTerm, setSearchTerm] = useState('');
+
   useEffect(() => {
     const storedAppointments = localStorage.getItem('appointments');
     if (storedAppointments) {
@@ -110,6 +113,12 @@ export default function PrescriptionsPage() {
     localStorage.setItem('prescriptions', JSON.stringify(filtered));
   };
 
+  // Filter prescriptions based on search term
+  const filteredPrescriptions = prescriptions.filter((p) => {
+    const patient = patients.find((pat) => pat.id === p.patientId);
+    return patient?.name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   return (
     <div className="min-h-screen bg-white py-10 px-4">
       <div className="max-w-4xl mx-auto bg-cyan-100 p-6 shadow-lg rounded-lg">
@@ -185,8 +194,17 @@ export default function PrescriptionsPage() {
           </button>
         </form>
 
+        {/* Search bar */}
+        <input
+          type="text"
+          placeholder="Search by patient name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full p-3 mb-6 text-cyan-900 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-0"
+        />
+
         <div className="space-y-6">
-          {prescriptions.map((p) => {
+          {filteredPrescriptions.map((p) => {
             const patient = patients.find((pat) => pat.id === p.patientId);
             return (
               <div
@@ -226,4 +244,3 @@ export default function PrescriptionsPage() {
     </div>
   );
 }
- 

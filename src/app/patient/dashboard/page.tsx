@@ -33,10 +33,19 @@ export default function PatientDashboard() {
   }, []);
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-center text-green-700 mb-8">
-        Available Doctors
-      </h1>
+    <div className="p-6 bg-gray-50 min-h-screen relative">
+      {/* Header with Button */}
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-green-700">
+          Available Doctors
+        </h1>
+        <button
+          onClick={() => router.push('/patient/prescriptions')}
+          className="bg-green-400 hover:bg-green-500 text-white font-medium py-2 px-4 rounded transition"
+        >
+          Show Prescriptions
+        </button>
+      </div>
 
       {loading ? (
         <p className="text-center text-gray-600">Loading...</p>
