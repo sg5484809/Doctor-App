@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { NextResponse } from "next/server";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 
 async function getData(id: string) {
   const prescriptions = JSON.parse(
@@ -20,12 +20,16 @@ async function getData(id: string) {
 
 export async function GET(
   req: Request,
-  context: { params: Record<string, string> } // ✅ FIXED
+  { params }: { params: { id: string } } // ✅ Correct type
 ) {
-  const { id } = context.params;
+  const { id } = params;
   const data = await getData(id);
+
   if (!data) {
-    return NextResponse.json({ error: 'Prescription not found' }, { status: 404 });
+    return NextResponse.json(
+      { error: "Prescription not found" },
+      { status: 404 }
+    );
   }
 
   const { prescription, patient } = data;
@@ -45,21 +49,30 @@ export async function GET(
     });
   };
 
-  drawText('Dr. Andrew Staton', 205, height - 65, 20);
-  drawText('MBBS, MD (Cardiology)', 205, height - 95, 14);
+  // Header
+  drawText("Dr. Andrew Staton", 205, height - 65, 20);
+  drawText("MBBS, MD (Cardiology)", 205, height - 95, 14);
 
+  // Patient info
   drawText(`Patient Name: ${patient.name}`, 140, height - 225, 16);
   drawText(`Date: ${patient.appointmentDate}`, 600, height - 225, 16);
-  drawText(`Age: ${patient.age || 'N/A'}`, 70, height - 285, 16);
-  drawText(`Gender: ${patient.sex || 'N/A'}`, 300, height - 285, 16);
-  drawText(`Weight: ${patient.weight || 'N/A'}`, 600, height - 285, 16);
+  drawText(`Age: ${patient.age || "N/A"}`, 70, height - 285, 16);
+  drawText(`Gender: ${patient.sex || "N/A"}`, 300, height - 285, 16);
+  drawText(`Weight: ${patient.weight || "N/A"}`, 600, height - 285, 16);
 
+  // Medicines
   let yPosition = height - 350;
   prescription.medicines.forEach((med: string) => {
-    drawText(`${med} — ${prescription.dosage} — ${prescription.duration}`, 100, yPosition, 16);
+    drawText(
+      `${med} — ${prescription.dosage} — ${prescription.duration}`,
+      100,
+      yPosition,
+      16
+    );
     yPosition -= 25;
   });
 
+  // Notes
   if (prescription.notes) {
     drawText(prescription.notes, 100, yPosition - 10, 14);
   }
@@ -69,8 +82,8 @@ export async function GET(
   return new NextResponse(pdfBytes, {
     status: 200,
     headers: {
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename=prescription-${id}.pdf`,
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename=prescription-${id}.pdf`,
     },
   });
 }
