@@ -76,7 +76,7 @@ export default function PrescriptionsPage() {
                   {getPatientName(p.patientId)}
                 </h3>
                 <p className="text-gray-800">
-                  <strong>Medicines:</strong> {p.medicines.join(', ')}
+                  <strong>Medicines:</strong> {p.medicines.join(', ')} 
                 </p>
                 <p className="text-gray-800">
                   <strong>Dosage:</strong> {p.dosage}

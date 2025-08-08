@@ -20,7 +20,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     x: 0,
     y: 0,
     width: 595,
-    height: 842,
+    height: 842, 
   });
 
   // TODO: Fetch real data from DB/localStorage equivalent on server

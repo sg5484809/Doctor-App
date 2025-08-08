@@ -18,7 +18,7 @@ interface Prescription {
   dosage: string;
   duration: string;
   notes: string;
-}
+} 
 
 export default function PrescriptionsPage() {
   const [patients, setPatients] = useState<Patient[]>([]);
