@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import type { NextRequest } from "next/server";
+
+interface RouteParams {
+  id: string;
+}
 
 async function getData(id: string) {
   const prescriptions = JSON.parse(
@@ -19,10 +24,10 @@ async function getData(id: string) {
 }
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } } // ✅ Correct type
+  req: NextRequest,
+  context: { params: RouteParams }
 ) {
-  const { id } = params;
+  const { id } = context.params;
   const data = await getData(id);
 
   if (!data) {
@@ -49,18 +54,15 @@ export async function GET(
     });
   };
 
-  // Header
   drawText("Dr. Andrew Staton", 205, height - 65, 20);
   drawText("MBBS, MD (Cardiology)", 205, height - 95, 14);
 
-  // Patient info
   drawText(`Patient Name: ${patient.name}`, 140, height - 225, 16);
   drawText(`Date: ${patient.appointmentDate}`, 600, height - 225, 16);
   drawText(`Age: ${patient.age || "N/A"}`, 70, height - 285, 16);
   drawText(`Gender: ${patient.sex || "N/A"}`, 300, height - 285, 16);
   drawText(`Weight: ${patient.weight || "N/A"}`, 600, height - 285, 16);
 
-  // Medicines
   let yPosition = height - 350;
   prescription.medicines.forEach((med: string) => {
     drawText(
@@ -72,7 +74,6 @@ export async function GET(
     yPosition -= 25;
   });
 
-  // Notes
   if (prescription.notes) {
     drawText(prescription.notes, 100, yPosition - 10, 14);
   }
